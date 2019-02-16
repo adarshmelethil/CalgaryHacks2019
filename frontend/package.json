@@ -1,0 +1,27 @@
+{
+  "name": "hackathon2019",
+  "version": "1.0.0",
+  "description": "`bower init`",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp-concat": "^2.6.1",
+    "gulp-html-replace": "^1.6.2",
+    "gulp-react": "^4.0.0",
+    "gulp-uglify": "^3.0.1"
+  },
+  "dependencies": {
+    "bower": "^1.8.8",
+    "del": "^3.0.0",
+    "gulp": "^4.0.0",
+    "gulp-browser": "^3.0.11",
+    "gulp-size": "^3.0.0",
+    "react": "^16.8.2",
+    "react-dom": "^16.8.2",
+    "reactify": "^1.1.1"
+  }
+}
