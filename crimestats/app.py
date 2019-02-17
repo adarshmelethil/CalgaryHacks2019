@@ -14,8 +14,8 @@ import pymongo
 from datetime import datetime, timezone
 import pytz
 
-app = dash.Dash(__name__, url_base_pathname="/stats/")
-# app = dash.Dash(__name__)
+# app = dash.Dash(__name__, url_base_pathname="/stats/")
+app = dash.Dash(__name__)
 server = app.server
 
 #df_crime_lat_lon = pd.read_csv('export.csv')
