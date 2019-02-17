@@ -101,11 +101,25 @@ def gendata():
     "Someone robbed me. Robbed, robbed, robbed",
     "Somebody stole my car. Car,car,car,car,stole,stole,stole,stole.",
   ]
-
+  # app.logger.info("CREATEING DATA")
+  # print("CREATEING DATA")
   all_data = []
   for result in perdelta(time_limit[0], time_limit[1], datetime.timedelta(hours=1)):
+    # timestamp = (row['time']/1000)
+    # thedate = datetime.fromtimestamp(result, pytz.timezone('Canada/Mountain'))
+    thedate = result
+    
+    add_data = False
+    # 22 2 
+    if (thedate.hour < 2 and thedate.hour > 0) or (thedate.hour > 22):
+      if random.uniform(0,1) < 0.8:
+        add_data = True
+    else:
+      if random.uniform(0,1) < 0.2:
+        add_data = True
     # for i in range(2):
-    if random.uniform(0,1) < 0.5:
+    # if random.uniform(0,1) < 0.5:
+    if add_data:
       all_data.append({
         "lon": round(random.uniform(*lon_limits), 5),
         "lat": round(random.uniform(*lat_limits), 5),
@@ -114,19 +128,35 @@ def gendata():
         "description": random.choice(description),
         "time": unix_time_millis(result)
       })
+      # app.logger.info("added uniform")
 
   coordinate_centers = (-114.05518, 51.03743)
 
   for result in perdelta(time_limit[0], time_limit[1], datetime.timedelta(hours=4)):
   # for i in range(15):
-    all_data.append({
-      "lon": round((random.uniform(-20, 20) * 0.0005) + coordinate_centers[0], 5),
-      "lat": round((random.uniform(-20, 20) * 0.0005) + coordinate_centers[1], 5),
-      
-      "crime": random.choice(crime_categories),
-      "description": random.choice(description),
-      "time": unix_time_millis(result)
-    })
+    # timestamp = (row['time']/1000)
+    # thedate = datetime.fromtimestamp(result, pytz.timezone('Canada/Mountain'))
+    thedate = result
+    
+    add_data = False
+    # 22 2 
+    if (thedate.hour < 2 and thedate.hour > 0) or (thedate.hour > 22):
+      if random.uniform(0,1) < 0.8:
+        add_data = True
+    else:
+      if random.uniform(0,1) < 0.2:
+        add_data = True
+
+    if add_data:
+      all_data.append({
+        "lon": round((random.uniform(-20, 20) * 0.0005) + coordinate_centers[0], 5),
+        "lat": round((random.uniform(-20, 20) * 0.0005) + coordinate_centers[1], 5),
+        
+        "crime": random.choice(crime_categories),
+        "description": random.choice(description),
+        "time": unix_time_millis(result)
+      })
+      # app.logger.info("added centered")
     
   for data in all_data:
     addNLPData(data)
