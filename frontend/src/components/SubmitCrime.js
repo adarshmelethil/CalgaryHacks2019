@@ -17,7 +17,7 @@ class SubmitCrime extends React.Component {
     console.log(data);
 
 
-    return fetch("submit_crime", {
+    return fetch("web/submit_crime", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

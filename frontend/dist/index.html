@@ -1,31 +1,31 @@
-<!doctype html><html lang="en"><head><script src="https://cdn.plot.ly/plotly-latest.min.js"></script><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta charset="utf-8"/><title>Crime Finder</title><link rel="shortcut icon" href="/favicon.ico"><link href="/main.d02959551eb257f4f370.css" rel="stylesheet"></head><body><div id="app"></div><script type="text/javascript" src="/main.a1843ce292d012851f3a.js"></script></body><script>var updated = false;
+<!doctype html><html lang="en"><head><script src="https://cdn.plot.ly/plotly-latest.min.js"></script><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta charset="utf-8"/><title>Crime Finder</title><link rel="shortcut icon" href="/favicon.ico"><link href="/web/main.d02959551eb257f4f370.css" rel="stylesheet"></head><body><div id="app"></div><script type="text/javascript" src="/web/main.c6f25a3a3026039312ea.js"></script></body><script>var updated = false;
   const COLORS = ["#7c0200","#03342e","#7d9267","#ff530d","#ffc92d"];
   function dosomething(){
     var myElement = document.getElementById("helloWorld");
 
     if(myElement && !updated){
-      fetch('/get_all_crimes', {
+      fetch('web/get_all_crimes', {
         headers:{ "Content-Type": "application/json" },
         method: 'GET',
       }).then(response  => response.text())
         .then(body => {
-          // let rawData = JSON.parse(body);
-          let rawData =[
-            {
-              "crime": "Breaking & Entering/Robbery",
-              "description": "asdf",
-              "lat": 51.086794,
-              "lon": -114.1297654,
-              "time": 1550384173790
-            },
-            {
-              "crime": "Breaking & Entering/Robbery",
-              "description": "asdf",
-              "lat": 51.087800,
-              "lon": -114.1298690,
-              "time": 1550384197977
-            }
-          ];
+          let rawData = JSON.parse(body);
+          // let rawData =[
+          //   {
+          //     "crime": "Breaking & Entering/Robbery",
+          //     "description": "asdf",
+          //     "lat": 51.086794,
+          //     "lon": -114.1297654,
+          //     "time": 1550384173790
+          //   },
+          //   {
+          //     "crime": "Breaking & Entering/Robbery",
+          //     "description": "asdf",
+          //     "lat": 51.087800,
+          //     "lon": -114.1298690,
+          //     "time": 1550384197977
+          //   }
+          // ];
 
           let crimeTypes = rawData.map( record => record.crime);
           crimeTypes = [...new Set(crimeTypes)];

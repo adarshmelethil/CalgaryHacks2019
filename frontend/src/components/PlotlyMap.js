@@ -15,7 +15,7 @@ class PlotlyMap extends React.Component {
   //
   //
   // componentDidMount() {
-  //   fetch('/get_all_crimes', {
+  //   fetch('web/get_all_crimes', {
   //       headers:{ "Content-Type": "application/json" },
   //       method: 'GET',
   //   }).then(response => this.updateUI(response));
