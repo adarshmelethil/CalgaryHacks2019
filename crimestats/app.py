@@ -37,7 +37,7 @@ def add_time():
     new_minute =[]
     for index, row in df_crime_lat_lon.iterrows():
         timestamp = (row['time']/1000)
-        dates = datetime.fromtimestamp(timestamp, pytz.timezone('Israel'))
+        dates = datetime.fromtimestamp(timestamp, pytz.timezone('Canada/Mountain'))
         new_day.append(dates.day)
         new_hour.append(dates.hour)
         new_minute.append(dates.minute)
