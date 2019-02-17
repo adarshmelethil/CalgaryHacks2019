@@ -10,7 +10,7 @@ class SubmitCrime extends React.Component {
       "crime": this.refs.crime.value,
       "description": this.refs.description.value,
       "lat": this.props.coords.latitude,
-      "log": this.props.coords.longitude,
+      "lon": this.props.coords.longitude,
       "time": new Date().getTime()
     };
 
