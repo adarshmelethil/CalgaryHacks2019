@@ -13,3 +13,4 @@ spec:
   #       backend:
   #         serviceName: webapp
   #         servicePort: 5000
+      # - path: /
