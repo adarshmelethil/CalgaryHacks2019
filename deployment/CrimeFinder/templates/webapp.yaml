@@ -1,0 +1,44 @@
+{{- $_ :=  set . "service_name" "webapp" }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .service_name }}
+  labels:
+    component: {{ .service_name }}
+spec:
+  selector:
+    component: {{ .service_name }}
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 5000
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .service_name }}
+  labels:
+    component: {{ .service_name }}
+spec:
+  selector:
+    matchLabels:
+      component: {{ .service_name }}
+  template:
+    metadata:
+      name: {{ .service_name }}
+      labels:
+        component: {{ .service_name }}
+    spec:
+      containers:
+      - name: {{ .service_name }}
+        image: gcr.io/hackathon-19/frontend-hack2019:0.0.1
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: MONGO_URI
+          value: 
+        ports:
+        - name: http
+          protocol: TCP
+          containerPort: 5000

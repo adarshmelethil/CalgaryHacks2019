@@ -1,0 +1,8 @@
+apiVersion: v1
+name: CrimeFinder
+version: 0.0.1
+description: Calgary Hackathon
+keywords:
+  - calgary
+  - hackathon
+  - crime
