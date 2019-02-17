@@ -43,6 +43,8 @@ def add_time():
         new_minute.append(dates.minute)
 
     df_crime_lat_lon['day'] = new_day
+    df_crime_lat_lon['hour'] = new_hour
+
 
 add_time()
 BINS = ['Violence', 'B&E/Robbery', 'Theft FROM Vehicle', 'Illegal Drug Activity']
@@ -132,13 +134,63 @@ html.Div([
                    )
         ], style={'margin': 20}),
         dcc.Graph(
-            id='selected-data2',
-            figure=dict(
-                data=[dict(x=0, y=0)],
+            id='Hour Chart',
+            figure=go.Figure(
+                data=[go.Histogram(
+                    histfunc = "count",
+                    #cumulative=dict(enabled=True),
+                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Violence']['hour'],
+                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Violence']['lon'],
+                    name = "Violence"
+                    ),
+go.Histogram(
+                    histfunc = "count",
+                    #cumulative=dict(enabled=True),
+                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['hour'],
+                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['hour'],
+                    name = "Breaking&Entering/Robbery"
+                    ),
+go.Histogram(
+                    histfunc = "count",
+                    #cumulative=dict(enabled=True),
+                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['hour'],
+                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['lon'],
+                    name = "Theft from Vehicle"
+                    ),
+
+go.Histogram(
+                    histfunc = "count",
+                    #cumulative=dict(enabled=True),
+                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['hour'],
+                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['lon'],
+                    name = "Drug Activity"
+                    )
+
+                ],
                 layout=dict(
+                    barmode='stack',
                     paper_bgcolor=colors['background'],
                     plot_bgcolor=colors['background'],
-                    height=700
+                    height=605,
+                    title="Crime per Hour of each Day",
+                    xaxis=dict(
+                        title='Hour of Day',
+                        titlefont=dict(
+                            family='Courier New, monospace',
+                            size=18,
+                            color='#7f7f7f'
+                        ),
+                        range=[0,23],
+                    tickmode='linear'
+                    ),
+                    yaxis=dict(
+                        title='Number of Crimes',
+                        titlefont=dict(
+                            family='Courier New, monospace',
+                            size=18,
+                            color='#7f7f7f'
+                        )
+                    )
                 )
             ),
             # animate = True
@@ -158,7 +210,7 @@ html.Div([
         html.Br(),
 
         dcc.Graph(
-            id='selected-data',
+            id='Day Chart',
             figure=go.Figure(
                 data=[go.Histogram(
                     histfunc = "count",
@@ -187,7 +239,7 @@ go.Histogram(
                     #cumulative=dict(enabled=True),
                     x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['day'],
                     y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['lon'],
-                    name = "count"
+                    name = "Drug Activity"
                     )
 
                 ],
@@ -215,19 +267,8 @@ go.Histogram(
                 )
             ),
             # animate = True
-        ),
-        dcc.Graph(
-            id='selected-data1',
-            figure=dict(
-                data=[dict(x=0, y=0)],
-                layout=dict(
-                    paper_bgcolor=colors['background'],
-                    plot_bgcolor=colors['background'],
-                    height=700
-                )
-            ),
-            # animate = True
-        )
+        )#,
+        #dcc.Graph
     ], className='six columns', style={'margin': 0}),
 ])
 
