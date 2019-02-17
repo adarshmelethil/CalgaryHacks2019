@@ -22,6 +22,17 @@ def createTestData():
   # insert_id = mongo.db.users.insert_one({"user": "asdf", "other": "stuff"}).inserted_id
   return "Inserted: {}".format(len(result.inserted_ids))
 
+@app.route('/load_in_data')
+def loadData()
+  with open('/data.json') as f:
+    data = json.load(f)
+
+  if len(data) > 0:
+    result = mongo.db.crimes.insert_many(data)
+
+    return "Inserted: {}".format(len(result.inserted_ids))
+  return "no data"
+
 @app.route('/get_all_crimes')
 def getAllCrimes():
   return jsonify(getAllCrimesFromDB())
