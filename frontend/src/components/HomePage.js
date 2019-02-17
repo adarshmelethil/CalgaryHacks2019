@@ -1,12 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-
+import PlotlyMap from "./PlotlyMap"
 const HomePage = () => {
-  return (
-    <div>
-      homepage
-    </div>
-  );
+  return(
+    <PlotlyMap/>
+  )
 };
 
 export default HomePage;

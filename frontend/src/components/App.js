@@ -25,7 +25,7 @@ class App extends React.Component {
         />
 
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-          <Navbar.Brand href="#home">Crime Finder</Navbar.Brand>
+          <Navbar.Brand href="/">Crime Finder</Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="mr-auto">
