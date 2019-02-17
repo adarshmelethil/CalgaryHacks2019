@@ -45,10 +45,8 @@ def downloadAll():
 @app.route("/submit_crime", methods=['POST'])
 def newCrimeData():
   data = json.loads(request.data)
-  
-  # if request.method == "POST":
+  id_ret = mongo.db.crimes.insert_one(data)
   return redirect(url_for("index"))
-  # return redirect(url_for("index"))
 
 @app.route('/', defaults={"path":""})
 @app.route('/<path:path>')
@@ -58,23 +56,6 @@ def index(path):
     return make_response(send_from_directory(os.path.join(path_dir), path))
   else:
     return make_response(render_template("index.html"))
-  # return make_response(render_template("index.html"))
-  # if path != "":
-  #   return make_response("index.html")
-  # else:
-  #   return render_template("index.html")
-
-  # path_dir = os.path.abspath("builds")
-  # if path != "" and os.path.exists(os.path.join(path_dir, path)):
-  #   return send_from_directory(os.path.join(path_dir), path)
-  # else:
-  #   print(os.path.join(path_dir),'index.html')
-  #   return send_from_directory(os.path.join(path_dir), 'index.html')
-  #   return render_template("index.html")
-  # return render_template("index.html")
-  # return 'You want path: %s' % path
-
-  # return send_from_directory("static", "index.html")
 
 
 def getAllCrimesFromDB():
