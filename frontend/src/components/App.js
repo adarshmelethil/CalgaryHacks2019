@@ -29,7 +29,7 @@ class App extends React.Component {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="mr-auto">
-              <Nav.Link style={{color:'red'}} href="/submit">Features</Nav.Link>
+              <Nav.Link style={{color:'red'}} href="/submit">Report Crime</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
