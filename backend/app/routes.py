@@ -6,22 +6,27 @@ import random
 import datetime
 import csv
 import json
+import spacy
+from collections import Counter
 
 from app import app
 from app import mongo
 
-@app.route('/web/create_test_data')
+
+nlp = spacy.load('en')
+
+@app.route('/create_test_data')
 def createTestData():
   result = mongo.db.crimes.insert_many(gendata())
   
   # insert_id = mongo.db.users.insert_one({"user": "asdf", "other": "stuff"}).inserted_id
   return "Inserted: {}".format(len(result.inserted_ids))
 
-@app.route('/web/get_all_crimes')
+@app.route('/get_all_crimes')
 def getAllCrimes():
   return jsonify(getAllCrimesFromDB())
 
-@app.route("/web/download_all_crimes")
+@app.route("/download_all_crimes")
 def downloadAll():
   crimes = getAllCrimesFromDB()
   si = StringIO()
@@ -42,16 +47,24 @@ def downloadAll():
   output.headers["Content-type"] = "text/csv"
   return output
 
-@app.route("/web/submit_crime", methods=['POST'])
+@app.route("/submit_crime", methods=['POST'])
 def newCrimeData():
   data = json.loads(request.data)
   data["lon"] = round(data["lon"], 5)
   data["lat"] = round(data["lat"], 5)
+
+  nlpDescription = nlp(data["description"])
+
+  nouns = [ token.text for token in nlpDescription if token.is_stop != True and token.is_punct !=True and token.pos_ == 'NOUN']
+  verbs = [ token.text for token in nlpDescription if token.is_stop != True and token.is_punct !=True and token.pos_ == 'VERB']
+  data["common_nouns"] = Counter(nouns).most_common(3)
+  data["common_verbs"] = Counter(verbs).most_common(3)
+
   id_ret = mongo.db.crimes.insert_one(data)
   return redirect(url_for("index"))
 
-@app.route('/web', defaults={"path":""})
-@app.route('/web/<path:path>')
+@app.route('/', defaults={"path":""})
+@app.route('/<path:path>')
 def index(path):
   path_dir = os.path.abspath("builds")
   if path != "" and os.path.exists(os.path.join(path_dir, path)):
@@ -77,19 +90,51 @@ def gendata():
   # past week
   time_limit = (datetime.datetime.today() - datetime.timedelta(days=7), datetime.datetime.today())
   
+  # more
+  description = [
+    "I got robbed. Robbed, robbed, robbed",
+    "Someone robbed me. Robbed, robbed, robbed",
+    "Somebody stole my car. Car,car,car,car,stole,stole,stole,stole.",
+  ]
+
   all_data = []
   for result in perdelta(time_limit[0], time_limit[1], datetime.timedelta(hours=1)):
-    for i in range(2):
-      if random.uniform(0,1) < 0.5:
-        all_data.append({
-          "lon": round(random.uniform(*lon_limits), 5),
-          "lat": round(random.uniform(*lat_limits), 5),
-          
-          "crime": random.choice(crime_categories),
-          "description": "",
-          "time": unix_time_millis(result)
-        })
+    # for i in range(2):
+    if random.uniform(0,1) < 0.5:
+      all_data.append({
+        "lon": round(random.uniform(*lon_limits), 5),
+        "lat": round(random.uniform(*lat_limits), 5),
+        
+        "crime": random.choice(crime_categories),
+        "description": random.choice(description),
+        "time": unix_time_millis(result)
+      })
+
+  coordinate_centers = (-114.05518, 51.03743)
+  for i in range(15):
+    all_data.append({
+      "lon": round((random.uniform(-20, 20) * 0.00001) + coordinate_centers[0], 5),
+      "lat": round((random.uniform(-20, 20) * 0.00001) + coordinate_centers[1], 5),
+      
+      "crime": random.choice(crime_categories),
+      "description": random.choice(description),
+      "time": unix_time_millis(result)
+    })
+    
+  for data in all_data:
+    addNLPData(data)
+
   return all_data
+
+
+def addNLPData(data):
+  nlpDescription = nlp(data["description"])
+
+  nouns = [ token.text for token in nlpDescription if token.is_stop != True and token.is_punct !=True and token.pos_ == 'NOUN']
+  verbs = [ token.text for token in nlpDescription if token.is_stop != True and token.is_punct !=True and token.pos_ == 'VERB']
+  data["common_nouns"] = Counter(nouns).most_common(3)
+  data["common_verbs"] = Counter(verbs).most_common(3)
+
 
 epoch = datetime.datetime.utcfromtimestamp(0)
 def unix_time_millis(dt):
