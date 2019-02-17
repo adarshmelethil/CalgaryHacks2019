@@ -10,6 +10,8 @@ COPY requirements.txt requirements.txt
 
 COPY run.sh run.sh
 
+RUN pip install -U spacy
+
 ENTRYPOINT ["bash"]
 
 CMD ["run.sh"]
