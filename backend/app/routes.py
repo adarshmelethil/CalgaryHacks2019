@@ -23,7 +23,7 @@ def createTestData():
   return "Inserted: {}".format(len(result.inserted_ids))
 
 @app.route('/load_in_data')
-def loadData()
+def loadData():
   with open('/data.json') as f:
     data = json.load(f)
 
