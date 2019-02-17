@@ -3,14 +3,14 @@ kind: Ingress
 metadata:
   name: test-ingress
 spec:
-  backend:
-    serviceName: webapp-service
-    servicePort: 5000
-  # rules:
-  # - http:
-  #     paths:
-  #     - path: /
-  #       backend:
-  #         serviceName: webapp
-  #         servicePort: 5000
-      # - path: /
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: webapp
+          servicePort: 5000
+      - path: /statistic
+        backend:
+          serviceName: statsapp
+          servicePort: 8050

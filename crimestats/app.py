@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -14,14 +15,18 @@ import pymongo
 app = dash.Dash(__name__)
 server = app.server
 
+app.config["APPLICATION_ROOT"] = "/statistic"
+
 #df_crime_lat_lon = pd.read_csv('export.csv')
 
+mongo_addr = os.environ.get("MONGO_URI") or "mongodb://localhost:27017"
+myclient = pymongo.MongoClient(mongo_addr)
 
-myclient = pymongo.MongoClient("mongodb://localhost:27017")
 mydb = myclient["hackdb"]
 crimeconnect = mydb.crimes
 df_crime_lat_lon = pd.DataFrame(list(crimeconnect.find()))
-del df_crime_lat_lon['_id']
+if '_id' in df_crime_lat_lon:
+    del df_crime_lat_lon['_id']
 
 
 YEARS = [2013, 2014, 2015]
@@ -176,9 +181,9 @@ height=800
 app.css.append_css({'external_url': 'https://codepen.io/plotly/pen/EQZeaW.css'})
 
 @app.callback(Output('container-button-timestamp', 'children'),
-              [Input('btn-1', 'n_clicks_timestamp')])
+              [Input('btn-1', 'n_clicks')])
 def displayClick(btn1):
-    myclient = pymongo.MongoClient("mongodb://localhost:27017")
+    myclient = pymongo.MongoClient(mongo_addr)
     mydb = myclient["hackdb"]
     crimeconnect = mydb.crimes
     df_crime_lat_lon = pd.DataFrame(list(crimeconnect.find()))
@@ -286,4 +291,4 @@ def update_map_title(crime):
     return 'Showing crimes from categories: {0}'.format(crime)
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(host="0.0.0.0", debug=True)

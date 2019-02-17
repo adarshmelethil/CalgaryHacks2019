@@ -45,6 +45,8 @@ def downloadAll():
 @app.route("/submit_crime", methods=['POST'])
 def newCrimeData():
   data = json.loads(request.data)
+  data["lon"] = round(data["lon"], 5)
+  data["lat"] = round(data["lat"], 5)
   id_ret = mongo.db.crimes.insert_one(data)
   return redirect(url_for("index"))
 
