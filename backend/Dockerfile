@@ -11,7 +11,7 @@ COPY requirements.txt requirements.txt
 COPY run.sh run.sh
 
 RUN pip install -U spacy
-
+RUN python -m spacy download en
 ENTRYPOINT ["bash"]
 
 CMD ["run.sh"]
