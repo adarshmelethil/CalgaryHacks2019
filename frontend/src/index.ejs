@@ -30,7 +30,7 @@
     var myElement = document.getElementById("helloWorld");
 
     if(myElement && !updated){
-      fetch('web/get_all_crimes', {
+      fetch('get_all_crimes', {
         headers:{ "Content-Type": "application/json" },
         method: 'GET',
       }).then(response  => response.text())
