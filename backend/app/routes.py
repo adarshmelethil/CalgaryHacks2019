@@ -22,6 +22,11 @@ def createTestData():
   # insert_id = mongo.db.users.insert_one({"user": "asdf", "other": "stuff"}).inserted_id
   return "Inserted: {}".format(len(result.inserted_ids))
 
+@app.route('/delete_all')
+def deleteAllData():
+  mongo.db.crimes.drop()
+  return "droped crimes data"
+
 @app.route('/get_all_crimes')
 def getAllCrimes():
   return jsonify(getAllCrimesFromDB())
@@ -128,12 +133,12 @@ def gendata():
 
 
 def addNLPData(data):
-  nlpDescription = nlp(data["description"])
+  nlpDescription = nlp(data["description"].lower())
 
   nouns = [ token.text for token in nlpDescription if token.is_stop != True and token.is_punct !=True and token.pos_ == 'NOUN']
   verbs = [ token.text for token in nlpDescription if token.is_stop != True and token.is_punct !=True and token.pos_ == 'VERB']
-  data["common_nouns"] = Counter(nouns).most_common(3)
-  data["common_verbs"] = Counter(verbs).most_common(3)
+  data["common_nouns"] = [c[0] for c in Counter(nouns).most_common(3)]
+  data["common_verbs"] = [c[0] for c in Counter(verbs).most_common(3)]
 
 
 epoch = datetime.datetime.utcfromtimestamp(0)

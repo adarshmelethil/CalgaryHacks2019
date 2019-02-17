@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: statsapp
-        image: gcr.io/hackathon-19/stats-hack2019:0.0.5
+        image: gcr.io/hackathon-19/stats-hack2019:0.0.7
         env:
         - name: MONGO_URI
           value: mongodb://mongodb:27017
