@@ -288,6 +288,7 @@ app.css.append_css({'external_url': 'https://codepen.io/plotly/pen/EQZeaW.css'})
 @app.callback(Output('container-button-timestamp', 'children'),
               [Input('btn-1', 'n_clicks')])
 def displayClick(btn1):
+    global df_crime_lat_lon
     myclient = pymongo.MongoClient(mongo_addr)
     mydb = myclient["hackdb"]
     crimeconnect = mydb.crimes
