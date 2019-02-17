@@ -139,30 +139,30 @@ html.Div([
                 data=[go.Histogram(
                     histfunc = "count",
                     #cumulative=dict(enabled=True),
-                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Violence']['hour'],
-                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Violence']['lon'],
+                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Violence']['hour'] if 'crime' in df_crime_lat_lon else [],
+                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Violence']['lon'] if 'crime' in df_crime_lat_lon else [],
                     name = "Violence"
                     ),
 go.Histogram(
                     histfunc = "count",
                     #cumulative=dict(enabled=True),
-                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['hour'],
-                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['hour'],
+                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['hour'] if 'crime' in df_crime_lat_lon else [],
+                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['hour'] if 'crime' in df_crime_lat_lon else [],
                     name = "Breaking&Entering/Robbery"
                     ),
 go.Histogram(
                     histfunc = "count",
                     #cumulative=dict(enabled=True),
-                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['hour'],
-                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['lon'],
+                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['hour'] if 'crime' in df_crime_lat_lon else [],
+                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['lon'] if 'crime' in df_crime_lat_lon else [],
                     name = "Theft from Vehicle"
                     ),
 
 go.Histogram(
                     histfunc = "count",
                     #cumulative=dict(enabled=True),
-                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['hour'],
-                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['lon'],
+                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['hour'] if 'crime' in df_crime_lat_lon else [],
+                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['lon'] if 'crime' in df_crime_lat_lon else [],
                     name = "Drug Activity"
                     )
 
@@ -226,30 +226,30 @@ go.Histogram(
                 data=[go.Histogram(
                     histfunc = "count",
                     #cumulative=dict(enabled=True),
-                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Violence']['day'],
-                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Violence']['lon'],
+                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Violence']['day'] if 'crime' in df_crime_lat_lon else [],
+                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Violence']['lon'] if 'crime' in df_crime_lat_lon else [],
                     name = "Violence"
                     ),
 go.Histogram(
                     histfunc = "count",
                     #cumulative=dict(enabled=True),
-                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['day'],
-                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['lon'],
+                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['day'] if 'crime' in df_crime_lat_lon else [],
+                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['lon'] if 'crime' in df_crime_lat_lon else [],
                     name = "Breaking&Entering/Robbery"
                     ),
 go.Histogram(
                     histfunc = "count",
                     #cumulative=dict(enabled=True),
-                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['day'],
-                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['lon'],
+                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['day'] if 'crime' in df_crime_lat_lon else [],
+                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['lon'] if 'crime' in df_crime_lat_lon else [],
                     name = "Theft from Vehicle"
                     ),
 
 go.Histogram(
                     histfunc = "count",
                     #cumulative=dict(enabled=True),
-                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['day'],
-                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['lon'],
+                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['day'] if 'crime' in df_crime_lat_lon else [],
+                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['lon'] if 'crime' in df_crime_lat_lon else [],
                     name = "Drug Activity"
                     )
 
