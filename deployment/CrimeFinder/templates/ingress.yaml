@@ -5,6 +5,9 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+  backend:
+    serviceName: statsapp-service
+    servicePort: 8050
   rules:
   - http:
       paths:
@@ -12,9 +15,6 @@ spec:
         backend:
           serviceName: webapp-service
           servicePort: 5000
-      - path: /stats/*
-        backend:
-          serviceName: statsapp-service
-          servicePort: 8050
+      
       
       
