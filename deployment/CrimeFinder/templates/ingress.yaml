@@ -12,7 +12,7 @@ spec:
         backend:
           serviceName: webapp-service
           servicePort: 5000
-      - path: /*
+      - path: /stats/*
         backend:
           serviceName: statsapp-service
           servicePort: 8050
