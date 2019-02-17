@@ -14,6 +14,8 @@ COPY requirements.txt requirements.txt
 
 COPY run.sh run.sh
 
+RUN pip install pytx
+
 ENTRYPOINT ["bash"]
 
 CMD ["run.sh"]
