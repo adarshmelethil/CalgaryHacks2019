@@ -128,7 +128,7 @@ def gendata():
 
 
 def addNLPData(data):
-  nlpDescription = nlp(data["description"])
+  nlpDescription = nlp(data["description"].lower())
 
   nouns = [ token.text for token in nlpDescription if token.is_stop != True and token.is_punct !=True and token.pos_ == 'NOUN']
   verbs = [ token.text for token in nlpDescription if token.is_stop != True and token.is_punct !=True and token.pos_ == 'VERB']
