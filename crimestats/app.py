@@ -11,6 +11,8 @@ import cufflinks as cf
 import numpy as np
 import re
 import pymongo
+from datetime import datetime, timezone
+import pytz
 
 app = dash.Dash(__name__)
 server = app.server
@@ -29,8 +31,21 @@ if '_id' in df_crime_lat_lon:
     del df_crime_lat_lon['_id']
 
 
-YEARS = [2013, 2014, 2015]
+def add_time():
+    new_date = []
+    new_day = []
+    new_hour = []
+    new_minute =[]
+    for index, row in df_crime_lat_lon.iterrows():
+        timestamp = (row['time']/1000)
+        dates = datetime.fromtimestamp(timestamp, pytz.timezone('Israel'))
+        new_day.append(dates.day)
+        new_hour.append(dates.hour)
+        new_minute.append(dates.minute)
 
+    df_crime_lat_lon['day'] = new_day
+
+add_time()
 BINS = ['Violence', 'B&E/Robbery', 'Theft FROM Vehicle', 'Illegal Drug Activity']
 
 DEFAULT_COLORSCALE = ["#2a4858", "#00968e", "#64c988", "#fafa6e"]
@@ -48,7 +63,7 @@ mapbox_access_token = "pk.eyJ1IjoiamFja3AiLCJhIjoidGpzN0lXVSJ9.7YK6eRwUNFwd3ODZf
 '''
 
 colors = {
-    'background': '#111111',
+    'background': '#FFFFFF',
     'text': '#7FDBFF'
 }
 
@@ -81,7 +96,7 @@ html.Div([
             html.Br(),
         ], style={'margin': 20}),
 
-        html.P('Showing crimes from categories: '.format(min(YEARS)),
+        html.P('Showing crimes from categories: '.format(BINS),
                id='heatmap-title',
                style={'fontWeight': 600}
                ),
@@ -107,8 +122,9 @@ html.Div([
                         pitch=0,
                         zoom=9.5
                     ),
-height=800
-                )
+                    height='800',
+                ),
+                style={"height": "80vh", "width": "100%"},
             )
         ),
 
@@ -123,42 +139,80 @@ height=800
                 layout=dict(
                     paper_bgcolor=colors['background'],
                     plot_bgcolor=colors['background'],
-                    height=720
+                    height=700
                 )
             ),
             # animate = True
         )
 
-    ], className='six columns', style={'margin': 0}),
+    ], className='six columns', style={'margin': 0, 'height': 800}),
 
     html.Div([
-        dcc.Checklist(
-            options=[{'label': 'Log scale', 'value': 'log'},
-                     {'label': 'Hide legend', 'value': 'hide_legend'},
-                     {'label': 'Include values flagged "Unreliable"', 'value': 'include_unreliable'}],
-            values=[],
-            labelStyle={'display': 'inline-block'},
-            id='log-scale',
-            style={'position': 'absolute', 'right': 80, 'top': 10}
-        ),
         html.Br(),
-        html.P('Select chart:', style={'display': 'inline-block'}),
-        dcc.Dropdown(
-            options=[{'label': 'Histogram of total number of deaths (single year)', 'value': 'show_absolute_deaths_single_year'},
-                     {'label': 'Histogram of total number of deaths (1999-2016)', 'value': 'absolute_deaths_all_time'},
-                     {'label': 'Age-adjusted death rate (single year)', 'value': 'show_death_rate_single_year'},
-                     {'label': 'Trends in age-adjusted death rate (1999-2016)', 'value': 'death_rate_all_time'}],
-            value='show_death_rate_single_year',
-            id='chart-dropdown'
-        ),
+        html.Br(),
+        html.Br(),
+        html.Br(),
+        html.Br(),
+        html.Br(),
+        html.Br(),
+        html.Br(),
+        html.Br(),
+
         dcc.Graph(
             id='selected-data',
-            figure=dict(
-                data=[dict(x=0, y=0)],
+            figure=go.Figure(
+                data=[go.Histogram(
+                    histfunc = "count",
+                    #cumulative=dict(enabled=True),
+                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Violence']['day'],
+                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Violence']['lon'],
+                    name = "Violence"
+                    ),
+go.Histogram(
+                    histfunc = "count",
+                    #cumulative=dict(enabled=True),
+                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['day'],
+                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['lon'],
+                    name = "Breaking&Entering/Robbery"
+                    ),
+go.Histogram(
+                    histfunc = "count",
+                    #cumulative=dict(enabled=True),
+                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['day'],
+                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['lon'],
+                    name = "Theft from Vehicle"
+                    ),
+
+go.Histogram(
+                    histfunc = "count",
+                    #cumulative=dict(enabled=True),
+                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['day'],
+                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['lon'],
+                    name = "count"
+                    )
+
+                ],
                 layout=dict(
                     paper_bgcolor=colors['background'],
                     plot_bgcolor=colors['background'],
-                    height=700
+                    height=605,
+                    title="Crime Per Day",
+                    xaxis=dict(
+                        title='Date of Current Month',
+                        titlefont=dict(
+                            family='Courier New, monospace',
+                            size=18,
+                            color='#7f7f7f'
+                        )
+                    ),
+                    yaxis=dict(
+                        title='Number of Crimes',
+                        titlefont=dict(
+                            family='Courier New, monospace',
+                            size=18,
+                            color='#7f7f7f'
+                        )
+                    )
                 )
             ),
             # animate = True
@@ -189,6 +243,7 @@ def displayClick(btn1):
     df_crime_lat_lon = pd.DataFrame(list(crimeconnect.find()))
     if "_id" in df_crime_lat_lon:
         del df_crime_lat_lon['_id']
+    add_time()
     print("dang")
     print(df_crime_lat_lon.to_string)
     return
@@ -220,33 +275,6 @@ def display_map(values, figure):
             i += 1
             if i >= 4:
                 i = 0
-    """
-    annotations = [dict(
-        showarrow=False,
-        align='right',
-        text='<b>Crime Category</b>',
-        x=0.95,
-        y=0.95,
-    )]
-
-    for i, bin in enumerate((BINS)):
-        color = cm[bin]
-        print(color)
-        print(bin)
-        annotations.append(
-            dict(
-                arrowcolor=color,
-                text=bin,
-                x=0.95,
-                y=0.85 - (i / 4),
-                ax=-80,
-                ay=0,
-                arrowwidth=5,
-                arrowhead=0,
-                bgcolor='#EFEFEE'
-            )
-        )
-    """
 
     if 'layout' in figure:
         lat = figure['layout']['mapbox']['center']['lat']
@@ -270,18 +298,6 @@ def display_map(values, figure):
         #annotations=annotations,
         dragmode='lasso'
     )
-    """
-    base_url = 'https://raw.githubusercontent.com/jackparmer/mapbox-counties/master/'
-    for bin in BINS:
-        geo_layer = dict(
-            sourcetype='geojson',
-            source=base_url + str(year) + '/' + bin + '.geojson',
-            type='fill',
-            color=cm[bin],
-            opacity=DEFAULT_OPACITY
-        )
-        layout['mapbox']['layers'].append(geo_layer)
-    """
     fig = dict(data=data, layout=layout)
     return fig
 
