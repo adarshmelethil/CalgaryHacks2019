@@ -35,7 +35,7 @@ class App extends React.Component {
         </Navbar>
 
         <Switch>
-          <Route exact path="" component={HomePage} />
+          <Route exact path="/" component={HomePage} />
           <Route path="/submit" component={SubmitCrime} />
           <Route component={NotFoundPage} />
         </Switch>
