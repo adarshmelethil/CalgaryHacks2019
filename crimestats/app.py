@@ -19,6 +19,8 @@ from collections import Counter
 app = dash.Dash(__name__)
 server = app.server
 df_words = pd.DataFrame(index=range(0,4),columns=['A'], dtype='float')
+df_words1 = pd.DataFrame(index=range(0,4),columns=['A'], dtype='float')
+
 # df_crime_lat_lon = pd.read_csv('export.csv')
 
 mongo_addr = os.environ.get("MONGO_URI") or "mongodb://localhost:27017"
@@ -34,6 +36,7 @@ if '_id' in df_crime_lat_lon:
 def add_time():
     global df_crime_lat_lon
     global df_words
+    global df_words1
     print(df_crime_lat_lon)
     new_date = []
     new_day = []
@@ -50,12 +53,36 @@ def add_time():
     df_crime_lat_lon['hour'] = new_hour
 
     if 'description' in df_crime_lat_lon:
-        result = Counter(" ".join(df_crime_lat_lon['description'].values.tolist()).split(" ")).items()
+        temp = []
+
+        for a in df_crime_lat_lon['common_nouns'].values:
+            temp.extend(a)
+        print(temp)
+        result = Counter(temp).items()
+        #result = Counter(" ".join(df_crime_lat_lon['description'].values.tolist()).split(" "))
+        #.items()
+
         print(result)
         print(dict(result))
 
         df_words = pd.DataFrame(list(result), columns=['0', '1'])
         print(df_words)
+        print("nice")
+
+        temp1 = []
+
+        for a in df_crime_lat_lon['common_verbs'].values:
+            temp1.extend(a)
+        print(temp1)
+        result = Counter(temp1).items()
+        #result = Counter(" ".join(df_crime_lat_lon['description'].values.tolist()).split(" "))
+        #.items()
+
+        print(result)
+        print(dict(result))
+
+        df_words1 = pd.DataFrame(list(result), columns=['0', '1'])
+        print(df_words1)
         print("nice")
 
 
@@ -297,8 +324,14 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
                 data=[go.Bar(
                     x=df_words['0'] if '0' in df_words else [],
                     y=df_words['1'] if '1' in df_words else [],
-                    orientation='v'
-                )],
+                    orientation='v',
+                    name = "nouns"
+                ), go.Bar(
+                    x=df_words1['0'] if '0' in df_words1 else [],
+                    y=df_words1['1'] if '1' in df_words1 else [],
+                    orientation='v',
+                    name="verbs")
+                ],
                 layout=dict(
                     paper_bgcolor=colors['background'],
                     plot_bgcolor=colors['background'],

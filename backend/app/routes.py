@@ -97,9 +97,9 @@ def gendata():
   
   # more
   description = [
-    "I got robbed. Robbed, robbed, robbed",
-    "Someone robbed me. Robbed, robbed, robbed",
-    "Somebody stole my car. Car,car,car,car,stole,stole,stole,stole.",
+    "I got robbed Robbed robbed robbed",
+    "Someone robbed me Robbed robbed robbed",
+    "Somebody stole my car Car car car car stole stole stole stole",
   ]
   # app.logger.info("CREATEING DATA")
   # print("CREATEING DATA")
