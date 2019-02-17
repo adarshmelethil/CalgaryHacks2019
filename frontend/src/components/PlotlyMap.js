@@ -1,5 +1,6 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
+const COLORS = ["#7c0200","#03342e","#7d9267","#ff530d","#ffc92d"];
 
 class PlotlyMap extends React.Component {
 
@@ -11,6 +12,7 @@ class PlotlyMap extends React.Component {
       data: [],
     };
   }
+
 
   componentDidMount() {
     fetch('/get_all_crimes', {
@@ -44,7 +46,7 @@ class PlotlyMap extends React.Component {
           let crimeTypes = rawData.map( record => record.crime);
           crimeTypes = [...new Set(crimeTypes)];
 
-          let data = crimeTypes.map( type => {
+          let data = crimeTypes.map( (type,i) => {
             let lat =[];
             let lon =[];
 
@@ -57,11 +59,13 @@ class PlotlyMap extends React.Component {
               type:'scattermapbox',
               lat:lat,
               lon:lon,
+              text:type,
               mode:'markers',
               marker: {
-                size:14
+                size:14,
+                color:COLORS[i]
               },
-              name:type
+              name:type,
             }
           });
           console.log(data);
@@ -114,7 +118,6 @@ class PlotlyMap extends React.Component {
               y: 0,
               xref: 'paper',
               yref: 'paper',
-              text: 'Source: NASA',
               showarrow: false
             }]
           }}
