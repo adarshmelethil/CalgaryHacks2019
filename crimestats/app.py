@@ -52,8 +52,11 @@ def add_time():
     if 'description' in df_crime_lat_lon:
         result = Counter(" ".join(df_crime_lat_lon['description'].values.tolist()).split(" ")).items()
         print(result)
-        df_words = pd.DataFrame(result)
+        print(dict(result))
+
+        df_words = pd.DataFrame(list(result), columns=['0', 'DateValue'])
         print(df_words)
+        print("nice")
 
 
 add_time()
