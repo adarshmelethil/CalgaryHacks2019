@@ -10,18 +10,18 @@ import json
 from app import app
 from app import mongo
 
-@app.route('/create_test_data')
+@app.route('/web/create_test_data')
 def createTestData():
   result = mongo.db.crimes.insert_many(gendata())
   
   # insert_id = mongo.db.users.insert_one({"user": "asdf", "other": "stuff"}).inserted_id
   return "Inserted: {}".format(len(result.inserted_ids))
 
-@app.route('/get_all_crimes')
+@app.route('/web/get_all_crimes')
 def getAllCrimes():
   return jsonify(getAllCrimesFromDB())
 
-@app.route("/download_all_crimes")
+@app.route("/web/download_all_crimes")
 def downloadAll():
   crimes = getAllCrimesFromDB()
   si = StringIO()
@@ -42,7 +42,7 @@ def downloadAll():
   output.headers["Content-type"] = "text/csv"
   return output
 
-@app.route("/submit_crime", methods=['POST'])
+@app.route("/web/submit_crime", methods=['POST'])
 def newCrimeData():
   data = json.loads(request.data)
   data["lon"] = round(data["lon"], 5)
@@ -50,8 +50,8 @@ def newCrimeData():
   id_ret = mongo.db.crimes.insert_one(data)
   return redirect(url_for("index"))
 
-@app.route('/', defaults={"path":""})
-@app.route('/<path:path>')
+@app.route('/web', defaults={"path":""})
+@app.route('/web/<path:path>')
 def index(path):
   path_dir = os.path.abspath("builds")
   if path != "" and os.path.exists(os.path.join(path_dir, path)):

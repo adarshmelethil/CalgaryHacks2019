@@ -8,11 +8,13 @@ spec:
   rules:
   - http:
       paths:
-      - path: /*
+      - path: /web/*
         backend:
           serviceName: webapp-service
           servicePort: 5000
-      - path: /statistic/*
+      - path: /*
         backend:
           serviceName: statsapp-service
           servicePort: 8050
+      
+      
