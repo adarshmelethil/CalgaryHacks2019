@@ -18,7 +18,7 @@ from collections import Counter
 # app = dash.Dash(__name__, url_base_pathname="/stats/")
 app = dash.Dash(__name__)
 server = app.server
-df_words = pd.DataFrame()
+df_words = pd.DataFrame(index=range(0,4),columns=['A'], dtype='float')
 # df_crime_lat_lon = pd.read_csv('export.csv')
 
 mongo_addr = os.environ.get("MONGO_URI") or "mongodb://localhost:27017"
