@@ -5,7 +5,33 @@ import {Form,Button,Container} from "react-bootstrap";
 class SubmitCrime extends React.Component {
 
   handleSubmit(e){
-    // this.refs.
+    e.preventDefault();
+    const data = {
+      "crime": this.refs.crime.value,
+      "description": this.refs.description.value,
+      "lat": this.props.coords.latitude,
+      "log": this.props.coords.longitude,
+      "time": new Date().getTime()
+    };
+
+    console.log(data);
+
+
+    return fetch("submit_crime", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+    })
+      .then(response => {
+        if (response.ok){
+          alert("Success. Data has been submitted.")
+        }else{
+          alert("Failed to submit data.")
+        }
+      });
+
   }
   render() {
     return !this.props.isGeolocationAvailable
@@ -32,10 +58,9 @@ class SubmitCrime extends React.Component {
                 <Form.Control as="textarea" rows="3" ref="description"/>
               </Form.Group>
               {this.props.coords
-                ? <div>
-                  <label>Location: Latitude={this.props.coords.latitude} , Longitude={this.props.coords.longitude}</label><br/>
-                  <Button type="submit">Submit</Button>
-                </div>
+                ? <p>Location: Latitude={this.props.coords.latitude} , Longitude={this.props.coords.longitude}<br/>
+                    <Button type="submit">Submit</Button>
+                  </p>
                 : <p>Loading location data. Please wait!</p>
               }
             </Form>
