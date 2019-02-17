@@ -6,9 +6,14 @@ import random
 import datetime
 import csv
 import json
+import spacy
+from collections import Counter
 
 from app import app
 from app import mongo
+
+
+nlp = spacy.load('en')
 
 @app.route('/web/create_test_data')
 def createTestData():
@@ -47,6 +52,14 @@ def newCrimeData():
   data = json.loads(request.data)
   data["lon"] = round(data["lon"], 5)
   data["lat"] = round(data["lat"], 5)
+
+  nlpDescription = nlp(data["description"])
+
+  nouns = [ token.text for token in nlpDescription if token.is_stop != True and token.is_punct !=True and token.pos_ == 'NOUN']
+  verbs = [ token.text for token in nlpDescription if token.is_stop != True and token.is_punct !=True and token.pos_ == 'VERB']
+  data["common_nouns"] = Counter(nouns).most_common(3)
+  data["common_verbs"] = Counter(verbs).most_common(3)
+
   id_ret = mongo.db.crimes.insert_one(data)
   return redirect(url_for("index"))
 
