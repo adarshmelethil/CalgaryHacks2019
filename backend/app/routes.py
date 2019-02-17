@@ -90,6 +90,13 @@ def gendata():
   # past week
   time_limit = (datetime.datetime.today() - datetime.timedelta(days=7), datetime.datetime.today())
   
+  # more
+  description = [
+    "I got robbed. Robbed, robbed, robbed",
+    "Someone robbed me. Robbed, robbed, robbed",
+    "Somebody stole my car. Car,car,car,car,stole,stole,stole,stole.",
+  ]
+
   all_data = []
   for result in perdelta(time_limit[0], time_limit[1], datetime.timedelta(hours=1)):
     # for i in range(2):
@@ -99,10 +106,35 @@ def gendata():
         "lat": round(random.uniform(*lat_limits), 5),
         
         "crime": random.choice(crime_categories),
-        "description": "",
+        "description": random.choice(description),
         "time": unix_time_millis(result)
       })
+
+  coordinate_centers = (-114.05518, 51.03743)
+  for i in range(15):
+    all_data.append({
+      "lon": round((random.uniform(-20, 20) * 0.00001) + coordinate_centers[0], 5),
+      "lat": round((random.uniform(-20, 20) * 0.00001) + coordinate_centers[1], 5),
+      
+      "crime": random.choice(crime_categories),
+      "description": random.choice(description),
+      "time": unix_time_millis(result)
+    })
+    
+  for data in all_data:
+    addNLPData(data)
+
   return all_data
+
+
+def addNLPData(data):
+  nlpDescription = nlp(data["description"])
+
+  nouns = [ token.text for token in nlpDescription if token.is_stop != True and token.is_punct !=True and token.pos_ == 'NOUN']
+  verbs = [ token.text for token in nlpDescription if token.is_stop != True and token.is_punct !=True and token.pos_ == 'VERB']
+  data["common_nouns"] = Counter(nouns).most_common(3)
+  data["common_verbs"] = Counter(verbs).most_common(3)
+
 
 epoch = datetime.datetime.utcfromtimestamp(0)
 def unix_time_millis(dt):
