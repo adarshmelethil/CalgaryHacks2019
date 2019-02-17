@@ -92,16 +92,16 @@ def gendata():
   
   all_data = []
   for result in perdelta(time_limit[0], time_limit[1], datetime.timedelta(hours=1)):
-    for i in range(2):
-      if random.uniform(0,1) < 0.5:
-        all_data.append({
-          "lon": round(random.uniform(*lon_limits), 5),
-          "lat": round(random.uniform(*lat_limits), 5),
-          
-          "crime": random.choice(crime_categories),
-          "description": "",
-          "time": unix_time_millis(result)
-        })
+    # for i in range(2):
+    if random.uniform(0,1) < 0.5:
+      all_data.append({
+        "lon": round(random.uniform(*lon_limits), 5),
+        "lat": round(random.uniform(*lat_limits), 5),
+        
+        "crime": random.choice(crime_categories),
+        "description": "",
+        "time": unix_time_millis(result)
+      })
   return all_data
 
 epoch = datetime.datetime.utcfromtimestamp(0)
