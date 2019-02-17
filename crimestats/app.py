@@ -13,12 +13,13 @@ import re
 import pymongo
 from datetime import datetime, timezone
 import pytz
+from collections import Counter
 
 # app = dash.Dash(__name__, url_base_pathname="/stats/")
 app = dash.Dash(__name__)
 server = app.server
-
-#df_crime_lat_lon = pd.read_csv('export.csv')
+df_words = pd.DataFrame()
+# df_crime_lat_lon = pd.read_csv('export.csv')
 
 mongo_addr = os.environ.get("MONGO_URI") or "mongodb://localhost:27017"
 myclient = pymongo.MongoClient(mongo_addr)
@@ -31,12 +32,15 @@ if '_id' in df_crime_lat_lon:
 
 
 def add_time():
+    global df_crime_lat_lon
+    global df_words
+    print(df_crime_lat_lon)
     new_date = []
     new_day = []
     new_hour = []
-    new_minute =[]
+    new_minute = []
     for index, row in df_crime_lat_lon.iterrows():
-        timestamp = (row['time']/1000)
+        timestamp = (row['time'] / 1000)
         dates = datetime.fromtimestamp(timestamp, pytz.timezone('Canada/Mountain'))
         new_day.append(dates.day)
         new_hour.append(dates.hour)
@@ -44,6 +48,12 @@ def add_time():
 
     df_crime_lat_lon['day'] = new_day
     df_crime_lat_lon['hour'] = new_hour
+
+    if 'description' in df_crime_lat_lon:
+        result = Counter(" ".join(df_crime_lat_lon['description'].values.tolist()).split(" ")).items()
+        print(result)
+        df_words = pd.DataFrame(result)
+        print(df_words)
 
 
 add_time()
@@ -79,7 +89,7 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
 
             html.Div([
                 dcc.Checklist(
-                    id = 'crime-list',
+                    id='crime-list',
                     options=[
                         {'label': 'Violence/Personal Theft', 'value': 'Violence'},
                         {'label': 'Breaking & Entering/Robbery', 'value': 'Breaking & Entering/Robbery'},
@@ -89,10 +99,10 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
                     values=['Violence']
                 ),
             ], style={'width': 400, 'margin': 0}),
-html.Div([
-    html.Button('Refresh', id='btn-1', n_clicks_timestamp='0'),
-    html.Div(id='container-button-timestamp')
-]),
+            html.Div([
+                html.Button('Refresh', id='btn-1', n_clicks_timestamp='0'),
+                html.Div(id='container-button-timestamp')
+            ]),
 
             html.Br(),
         ], style={'margin': 20}),
@@ -137,33 +147,33 @@ html.Div([
             id='Hour Chart',
             figure=go.Figure(
                 data=[go.Histogram(
-                    histfunc = "count",
-                    #cumulative=dict(enabled=True),
+                    histfunc="count",
+                    # cumulative=dict(enabled=True),
                     x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Violence']['hour'] if 'crime' in df_crime_lat_lon else [],
                     y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Violence']['lon'] if 'crime' in df_crime_lat_lon else [],
-                    name = "Violence"
+                    name="Violence"
+                ),
+                    go.Histogram(
+                        histfunc="count",
+                        # cumulative=dict(enabled=True),
+                        x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['hour'] if 'crime' in df_crime_lat_lon else [],
+                        y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['hour'] if 'crime' in df_crime_lat_lon else [],
+                        name="Breaking&Entering/Robbery"
                     ),
-go.Histogram(
-                    histfunc = "count",
-                    #cumulative=dict(enabled=True),
-                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['hour'] if 'crime' in df_crime_lat_lon else [],
-                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['hour'] if 'crime' in df_crime_lat_lon else [],
-                    name = "Breaking&Entering/Robbery"
-                    ),
-go.Histogram(
-                    histfunc = "count",
-                    #cumulative=dict(enabled=True),
-                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['hour'] if 'crime' in df_crime_lat_lon else [],
-                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['lon'] if 'crime' in df_crime_lat_lon else [],
-                    name = "Theft from Vehicle"
+                    go.Histogram(
+                        histfunc="count",
+                        # cumulative=dict(enabled=True),
+                        x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['hour'] if 'crime' in df_crime_lat_lon else [],
+                        y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['lon'] if 'crime' in df_crime_lat_lon else [],
+                        name="Theft from Vehicle"
                     ),
 
-go.Histogram(
-                    histfunc = "count",
-                    #cumulative=dict(enabled=True),
-                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['hour'] if 'crime' in df_crime_lat_lon else [],
-                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['lon'] if 'crime' in df_crime_lat_lon else [],
-                    name = "Drug Activity"
+                    go.Histogram(
+                        histfunc="count",
+                        # cumulative=dict(enabled=True),
+                        x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['hour'] if 'crime' in df_crime_lat_lon else [],
+                        y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['lon'] if 'crime' in df_crime_lat_lon else [],
+                        name="Drug Activity"
                     )
 
                 ],
@@ -180,8 +190,8 @@ go.Histogram(
                             size=18,
                             color='#7f7f7f'
                         ),
-                        range=[0,23],
-                    tickmode='linear'
+                        range=[0, 23],
+                        tickmode='linear'
                     ),
                     yaxis=dict(
                         title='Number of Crimes',
@@ -224,33 +234,33 @@ go.Histogram(
             id='Day Chart',
             figure=go.Figure(
                 data=[go.Histogram(
-                    histfunc = "count",
-                    #cumulative=dict(enabled=True),
+                    histfunc="count",
+                    # cumulative=dict(enabled=True),
                     x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Violence']['day'] if 'crime' in df_crime_lat_lon else [],
                     y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Violence']['lon'] if 'crime' in df_crime_lat_lon else [],
-                    name = "Violence"
+                    name="Violence"
+                ),
+                    go.Histogram(
+                        histfunc="count",
+                        # cumulative=dict(enabled=True),
+                        x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['day'] if 'crime' in df_crime_lat_lon else [],
+                        y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['lon'] if 'crime' in df_crime_lat_lon else [],
+                        name="Breaking&Entering/Robbery"
                     ),
-go.Histogram(
-                    histfunc = "count",
-                    #cumulative=dict(enabled=True),
-                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['day'] if 'crime' in df_crime_lat_lon else [],
-                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Breaking & Entering/Robbery']['lon'] if 'crime' in df_crime_lat_lon else [],
-                    name = "Breaking&Entering/Robbery"
-                    ),
-go.Histogram(
-                    histfunc = "count",
-                    #cumulative=dict(enabled=True),
-                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['day'] if 'crime' in df_crime_lat_lon else [],
-                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['lon'] if 'crime' in df_crime_lat_lon else [],
-                    name = "Theft from Vehicle"
+                    go.Histogram(
+                        histfunc="count",
+                        # cumulative=dict(enabled=True),
+                        x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['day'] if 'crime' in df_crime_lat_lon else [],
+                        y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Theft FROM Vehicle']['lon'] if 'crime' in df_crime_lat_lon else [],
+                        name="Theft from Vehicle"
                     ),
 
-go.Histogram(
-                    histfunc = "count",
-                    #cumulative=dict(enabled=True),
-                    x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['day'] if 'crime' in df_crime_lat_lon else [],
-                    y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['lon'] if 'crime' in df_crime_lat_lon else [],
-                    name = "Drug Activity"
+                    go.Histogram(
+                        histfunc="count",
+                        # cumulative=dict(enabled=True),
+                        x=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['day'] if 'crime' in df_crime_lat_lon else [],
+                        y=df_crime_lat_lon[df_crime_lat_lon['crime'] == 'Illegal Drug Activity']['lon'] if 'crime' in df_crime_lat_lon else [],
+                        name="Drug Activity"
                     )
 
                 ],
@@ -278,12 +288,43 @@ go.Histogram(
                 )
             ),
             # animate = True
-        )#,
-        #dcc.Graph
+        ),
+        dcc.Graph(
+            figure=go.Figure(
+                data=[go.Bar(
+                    x=df_words['0'] if '0' in df_words else [],
+                    y=df_words['1'] if '1' in df_words else [],
+                    orientation='h'
+                )],
+                layout=dict(
+                    paper_bgcolor=colors['background'],
+                    plot_bgcolor=colors['background'],
+                    height=600,
+                    title="Most Used Words in Descriptions",
+                    xaxis=dict(
+                        title='Word',
+                        titlefont=dict(
+                            family='Courier New, monospace',
+                            size=18,
+                            color='#7f7f7f'
+                        )
+                    ),
+                    yaxis=dict(
+                        title='Count',
+                        titlefont=dict(
+                            family='Courier New, monospace',
+                            size=18,
+                            color='#7f7f7f'
+                        )
+                    )
+                )
+            )
+        )
     ], className='six columns', style={'margin': 0}),
 ])
 
 app.css.append_css({'external_url': 'https://codepen.io/plotly/pen/EQZeaW.css'})
+
 
 @app.callback(Output('container-button-timestamp', 'children'),
               [Input('btn-1', 'n_clicks')])
@@ -300,6 +341,7 @@ def displayClick(btn1):
     print(df_crime_lat_lon.to_string)
     return
 
+
 @app.callback(
     Output('city-crimes', 'figure'),
     [Input('crime-list', 'values')],
@@ -307,7 +349,7 @@ def displayClick(btn1):
 def display_map(values, figure):
     cm = dict(zip(BINS, DEFAULT_COLORSCALE))
     data = []
-    i=0
+    i = 0
     print(values)
     for value in values:
         if 'crime' in df_crime_lat_lon:
@@ -347,7 +389,7 @@ def display_map(values, figure):
         ),
         hovermode='closest',
         margin=dict(r=0, l=0, t=0, b=0),
-        #annotations=annotations,
+        # annotations=annotations,
         dragmode='lasso'
     )
     fig = dict(data=data, layout=layout)
@@ -359,6 +401,7 @@ def display_map(values, figure):
     [Input('crime-list', 'values')])
 def update_map_title(crime):
     return 'Showing crimes from categories: {0}'.format(crime)
+
 
 if __name__ == '__main__':
     app.run_server(host="0.0.0.0", debug=True)
