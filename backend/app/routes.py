@@ -22,6 +22,11 @@ def createTestData():
   # insert_id = mongo.db.users.insert_one({"user": "asdf", "other": "stuff"}).inserted_id
   return "Inserted: {}".format(len(result.inserted_ids))
 
+@app.route('/delete_all')
+def deleteAllData():
+  mongo.db.crimes.drop()
+  return "droped crimes data"
+
 @app.route('/get_all_crimes')
 def getAllCrimes():
   return jsonify(getAllCrimesFromDB())
