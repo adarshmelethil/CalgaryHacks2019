@@ -1,19 +1,14 @@
-
-from flask import render_template, jsonify, make_response
+import os
+from flask import render_template, jsonify, make_response, request, redirect, url_for, send_from_directory
 
 from io import StringIO
 import random
 import datetime
 import csv
+import json
 
 from app import app
 from app import mongo
-
-
-@app.route('/')
-@app.route('/index')
-def index():
-  return render_template("index.html", user={"username": "Bob"})
 
 @app.route('/create_test_data')
 def createTestData():
@@ -47,9 +42,40 @@ def downloadAll():
   output.headers["Content-type"] = "text/csv"
   return output
 
-@app.route("/submit_crime")
+@app.route("/submit_crime", methods=['POST'])
 def newCrimeData():
-  return "NotImplemented"
+  data = json.loads(request.data)
+  
+  # if request.method == "POST":
+  return redirect(url_for("index"))
+  # return redirect(url_for("index"))
+
+@app.route('/', defaults={"path":""})
+@app.route('/<path:path>')
+def index(path):
+  path_dir = os.path.abspath("builds")
+  if path != "" and os.path.exists(os.path.join(path_dir, path)):
+    return make_response(send_from_directory(os.path.join(path_dir), path))
+  else:
+    return make_response(render_template("index.html"))
+  # return make_response(render_template("index.html"))
+  # if path != "":
+  #   return make_response("index.html")
+  # else:
+  #   return render_template("index.html")
+
+  # path_dir = os.path.abspath("builds")
+  # if path != "" and os.path.exists(os.path.join(path_dir, path)):
+  #   return send_from_directory(os.path.join(path_dir), path)
+  # else:
+  #   print(os.path.join(path_dir),'index.html')
+  #   return send_from_directory(os.path.join(path_dir), 'index.html')
+  #   return render_template("index.html")
+  # return render_template("index.html")
+  # return 'You want path: %s' % path
+
+  # return send_from_directory("static", "index.html")
+
 
 def getAllCrimesFromDB():
   return [{k: c[k] for k in c if k != "_id"} for c in mongo.db.crimes.find()]
@@ -91,11 +117,3 @@ def perdelta(start, end, delta):
   while curr < end:
     yield curr
     curr += delta
-
-{
-  "crime": "Violence", 
-  "description": "", 
-  "lat": 50.96902, 
-  "log": -113.99686, 
-  "time": 1549746875898.268
-}
