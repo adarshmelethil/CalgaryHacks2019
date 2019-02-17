@@ -116,7 +116,9 @@ def gendata():
   #     })
 
   coordinate_centers = (-114.05518, 51.03743)
-  for i in range(15):
+
+  for result in perdelta(time_limit[0], time_limit[1], datetime.timedelta(hours=4)):
+  # for i in range(15):
     all_data.append({
       "lon": round((random.uniform(-20, 20) * 0.00001) + coordinate_centers[0], 5),
       "lat": round((random.uniform(-20, 20) * 0.00001) + coordinate_centers[1], 5),
