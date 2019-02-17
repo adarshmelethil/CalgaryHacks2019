@@ -25,23 +25,23 @@ class PlotlyMap extends React.Component {
     response
       .text()
       .then(body => {
-          // let rawData = JSON.parse(body);
-          let rawData =[
-            {
-              "crime": "Breaking & Entering/Robbery",
-              "description": "asdf",
-              "lat": 51.086794,
-              "lon": -114.1297654,
-              "time": 1550384173790
-            },
-            {
-              "crime": "Breaking & Entering/Robbery",
-              "description": "asdf",
-              "lat": 51.087800,
-              "lon": -114.1298690,
-              "time": 1550384197977
-            }
-          ];
+          let rawData = JSON.parse(body);
+          // let rawData =[
+          //   {
+          //     "crime": "Breaking & Entering/Robbery",
+          //     "description": "asdf",
+          //     "lat": 51.086794,
+          //     "lon": -114.1297654,
+          //     "time": 1550384173790
+          //   },
+          //   {
+          //     "crime": "Breaking & Entering/Robbery",
+          //     "description": "asdf",
+          //     "lat": 51.087800,
+          //     "lon": -114.1298690,
+          //     "time": 1550384197977
+          //   }
+          // ];
 
           let crimeTypes = rawData.map( record => record.crime);
           crimeTypes = [...new Set(crimeTypes)];
