@@ -199,6 +199,17 @@ go.Histogram(
     ], className='six columns', style={'margin': 0, 'height': 800}),
 
     html.Div([
+        html.Img(
+            src="https://upload.wikimedia.org/wikipedia/en/thumb/4/4d/COA_of_Calgary.svg/250px-COA_of_Calgary.svg.png",
+            className="two columns",
+            style={
+                'height': '225',
+                'width': '225',
+                'float': 'right',
+                'position': 'floating',
+            },
+        ),
+        html.Br(),
         html.Br(),
         html.Br(),
         html.Br(),
@@ -246,7 +257,7 @@ go.Histogram(
                 layout=dict(
                     paper_bgcolor=colors['background'],
                     plot_bgcolor=colors['background'],
-                    height=605,
+                    height=585,
                     title="Crime Per Day",
                     xaxis=dict(
                         title='Date of Current Month',
