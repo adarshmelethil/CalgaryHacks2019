@@ -27,11 +27,11 @@ def downloadAll():
   si = StringIO()
   cw = csv.writer(si)
 
-  cw.writerow(["log", "lat", "crime", "description", "time"])
+  cw.writerow(["lon", "lat", "crime", "description", "time"])
   
   cw.writerows([
     [
-      crime["log"],
+      crime["lon"],
       crime["lat"],
       crime["crime"],
       crime["description"],
@@ -61,7 +61,7 @@ def index(path):
 def getAllCrimesFromDB():
   return [{k: c[k] for k in c if k != "_id"} for c in mongo.db.crimes.find()]
 def gendata():
-  log_limits = (-114.22191, -113.91841)
+  lon_limits = (-114.22191, -113.91841)
   lat_limits = (50.86999, 51.18267)
 
   crime_categories = [
@@ -80,7 +80,7 @@ def gendata():
     for i in range(2):
       if random.uniform(0,1) < 0.5:
         all_data.append({
-          "log": round(random.uniform(*log_limits), 5),
+          "lon": round(random.uniform(*lon_limits), 5),
           "lat": round(random.uniform(*lat_limits), 5),
           
           "crime": random.choice(crime_categories),

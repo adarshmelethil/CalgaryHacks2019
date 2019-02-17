@@ -1,43 +1,54 @@
-{{- $_ :=  set . "service_name" "webapp" }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp
+  labels:
+    component: webapp
+spec:
+  selector:
+    component: webapp
+  ports:
+  - name: http
+    port: 5000
+    protocol: TCP
+    targetPort: 5000
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .service_name }}
-  labels:
-    component: {{ .service_name }}
+  name: webapp-service
 spec:
+  type: NodePort
   selector:
-    component: {{ .service_name }}
+    component: webapp
   ports:
-  - name: http
-    port: 8080
-    protocol: TCP
+  - protocol: TCP
+    port: 5000
     targetPort: 5000
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ .service_name }}
+  name: webapp
   labels:
-    component: {{ .service_name }}
+    component: webapp
 spec:
   selector:
     matchLabels:
-      component: {{ .service_name }}
+      component: webapp
   template:
     metadata:
-      name: {{ .service_name }}
+      name: webapp
       labels:
-        component: {{ .service_name }}
+        component: webapp
     spec:
       containers:
-      - name: {{ .service_name }}
-        image: gcr.io/hackathon-19/frontend-hack2019:0.0.1
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
+      - name: webapp
+        image: gcr.io/hackathon-19/frontend-hack2019:0.0.2
         env:
         - name: MONGO_URI
-          value: 
+          value: mongodb://mongodb:27017/hackdb
         ports:
         - name: http
           protocol: TCP
