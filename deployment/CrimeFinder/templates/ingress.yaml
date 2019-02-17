@@ -8,9 +8,9 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: webapp
+          serviceName: webapp-service
           servicePort: 5000
       - path: /statistic
         backend:
-          serviceName: statsapp
+          serviceName: statsapp-service
           servicePort: 8050
