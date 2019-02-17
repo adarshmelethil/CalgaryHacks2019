@@ -9,11 +9,20 @@ import pandas as pd
 import cufflinks as cf
 import numpy as np
 import re
+import pymongo
 
 app = dash.Dash(__name__)
 server = app.server
 
-df_crime_lat_lon = pd.read_csv('export.csv')
+#df_crime_lat_lon = pd.read_csv('export.csv')
+
+
+myclient = pymongo.MongoClient("mongodb://localhost:27017")
+mydb = myclient["hackdb"]
+crimeconnect = mydb.crimes
+df_crime_lat_lon = pd.DataFrame(list(crimeconnect.find()))
+del df_crime_lat_lon['_id']
+
 
 YEARS = [2013, 2014, 2015]
 
@@ -59,6 +68,10 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
                     values=['Violence']
                 ),
             ], style={'width': 400, 'margin': 0}),
+html.Div([
+    html.Button('Refresh', id='btn-1', n_clicks_timestamp='0'),
+    html.Div(id='container-button-timestamp')
+]),
 
             html.Br(),
         ], style={'margin': 20}),
@@ -73,7 +86,7 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
             figure=dict(
                 data=dict(
                     lat=df_crime_lat_lon['lat'],
-                    lon=df_crime_lat_lon['log'],
+                    lon=df_crime_lat_lon['lon'],
                     text=df_crime_lat_lon['crime'],
                     type='scattermapbox'
                 ),
@@ -88,7 +101,8 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
                         ),
                         pitch=0,
                         zoom=9.5
-                    )
+                    ),
+height=800
                 )
             )
         ),
@@ -161,6 +175,17 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
 
 app.css.append_css({'external_url': 'https://codepen.io/plotly/pen/EQZeaW.css'})
 
+@app.callback(Output('container-button-timestamp', 'children'),
+              [Input('btn-1', 'n_clicks_timestamp')])
+def displayClick(btn1):
+    myclient = pymongo.MongoClient("mongodb://localhost:27017")
+    mydb = myclient["hackdb"]
+    crimeconnect = mydb.crimes
+    df_crime_lat_lon = pd.DataFrame(list(crimeconnect.find()))
+    del df_crime_lat_lon['_id']
+    print("dang")
+    print(df_crime_lat_lon.to_string)
+    return
 
 @app.callback(
     Output('city-crimes', 'figure'),
@@ -175,7 +200,7 @@ def display_map(values, figure):
         dataframe = df_crime_lat_lon[df_crime_lat_lon['crime'] == value]
         trace0 = go.Scattermapbox(
             lat=dataframe['lat'],
-            lon=dataframe['log'],
+            lon=dataframe['lon'],
             text=dataframe['crime'],
             hoverinfo='text',
             mode='markers',
