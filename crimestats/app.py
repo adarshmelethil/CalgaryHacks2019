@@ -90,9 +90,9 @@ html.Div([
             id='city-crimes',
             figure=dict(
                 data=dict(
-                    lat=df_crime_lat_lon['lat'],
-                    lon=df_crime_lat_lon['lon'],
-                    text=df_crime_lat_lon['crime'],
+                    lat=(df_crime_lat_lon['lat'] if 'lat' in df_crime_lat_lon else []),
+                    lon=(df_crime_lat_lon['lon'] if 'lon' in df_crime_lat_lon else []),
+                    text=(df_crime_lat_lon['crime'] if 'crime' in df_crime_lat_lon else []),
                     type='scattermapbox'
                 ),
                 layout=dict(
@@ -187,7 +187,8 @@ def displayClick(btn1):
     mydb = myclient["hackdb"]
     crimeconnect = mydb.crimes
     df_crime_lat_lon = pd.DataFrame(list(crimeconnect.find()))
-    del df_crime_lat_lon['_id']
+    if "_id" in df_crime_lat_lon:
+        del df_crime_lat_lon['_id']
     print("dang")
     print(df_crime_lat_lon.to_string)
     return
@@ -202,22 +203,23 @@ def display_map(values, figure):
     i=0
     print(values)
     for value in values:
-        dataframe = df_crime_lat_lon[df_crime_lat_lon['crime'] == value]
-        trace0 = go.Scattermapbox(
-            lat=dataframe['lat'],
-            lon=dataframe['lon'],
-            text=dataframe['crime'],
-            hoverinfo='text',
-            mode='markers',
-            name=value,
-            # selected = dict(marker = dict(opacity=1)),
-            # unselected = dict(marker = dict(opacity = 0)),
-            marker=dict(size=9, color=DEFAULT_COLORSCALE[i])
-        )
-        data.append(trace0)
-        i += 1
-        if i >= 4:
-            i = 0
+        if 'crime' in df_crime_lat_lon:
+            dataframe = df_crime_lat_lon[df_crime_lat_lon['crime'] == value]
+            trace0 = go.Scattermapbox(
+                lat=dataframe['lat'],
+                lon=dataframe['lon'],
+                text=dataframe['crime'],
+                hoverinfo='text',
+                mode='markers',
+                name=value,
+                # selected = dict(marker = dict(opacity=1)),
+                # unselected = dict(marker = dict(opacity = 0)),
+                marker=dict(size=9, color=DEFAULT_COLORSCALE[i])
+            )
+            data.append(trace0)
+            i += 1
+            if i >= 4:
+                i = 0
     """
     annotations = [dict(
         showarrow=False,
