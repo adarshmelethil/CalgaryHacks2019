@@ -54,7 +54,7 @@ def add_time():
         print(result)
         print(dict(result))
 
-        df_words = pd.DataFrame(list(result), columns=['0', 'DateValue'])
+        df_words = pd.DataFrame(list(result), columns=['0', '1'])
         print(df_words)
         print("nice")
 
@@ -297,7 +297,7 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
                 data=[go.Bar(
                     x=df_words['0'] if '0' in df_words else [],
                     y=df_words['1'] if '1' in df_words else [],
-                    orientation='h'
+                    orientation='v'
                 )],
                 layout=dict(
                     paper_bgcolor=colors['background'],
