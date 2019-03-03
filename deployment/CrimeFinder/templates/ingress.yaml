@@ -1,16 +1,25 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: test-ingress
+  name: statsapp--ingress
 spec:
   rules:
   - http:
       paths:
-      - path: /web/*
-        backend:
-          serviceName: webapp-service
-          servicePort: 5000
       - path: /*
         backend:
           serviceName: statsapp-service
           servicePort: 8050
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: webapp-ingress
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: webapp-service
+          servicePort: 5000
